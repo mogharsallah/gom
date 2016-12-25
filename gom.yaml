@@ -1,0 +1,6 @@
+name: gom
+commands:
+  install:
+    - go fmt github.com/medhoover/gom
+    - go install github.com/medhoover/gom
+  run: go run gom.go
