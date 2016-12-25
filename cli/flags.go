@@ -67,3 +67,7 @@ func init() {
 	FlagCount = flag.NFlag()
 	ArgCount = flag.NArg()
 }
+
+func Usage() {
+	flag.Usage()
+}

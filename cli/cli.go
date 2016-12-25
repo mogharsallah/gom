@@ -19,9 +19,15 @@ func New() {
 	// Show gom version if -v flag was present
 	if VersionFlag {
 		logger.Info("Version 0.1.0\nPlease check https://github.com/medhoover/gom for new updates")
+		os.Exit(1)
 	}
 
-	// TODO: Add error handling for insufficient arguments
+	// Show help if no arguments were entered
+	if ArgCount == 0 {
+		Usage()
+		os.Exit(1)
+	}
+
 	a := Action{Path: os.Args[FlagCount+1:]}
 	ci := config.New(FilePath)
 	launche(a, ci)
