@@ -9,11 +9,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-type Action struct {
-	Path  []string
-	Index int
-}
-
 func New() {
 
 	// Show gom version if -v flag was present
@@ -23,29 +18,30 @@ func New() {
 	}
 
 	// Show help if no arguments were entered
-	if ArgCount == 0 {
+	if ArgCount <= FlagCount {
 		Usage()
 		os.Exit(1)
 	}
 
-	a := Action{Path: os.Args[FlagCount+1:]}
+	path := os.Args[FlagCount+1:]
+	index := FlagCount
 	ci := config.New(FilePath)
-	launche(a, ci)
+	launche(path, index, ci)
 }
 
-func launche(a Action, ci *config.ConfigInstance) {
+func launche(path []string, index int, ci *config.ConfigInstance) {
 
-	if command, exist := ci.Commands[a.Path[a.Index]]; exist {
-		if err := command.Execute(a.Path, a.Index); err != nil {
+	if command, exist := ci.Commands[path[index]]; exist {
+		if err := command.Execute(path, index); err != nil {
 			logger.Error(
 				errors.Wrapf(
 					err,
 					"Invalid command '%s'",
-					strings.Join(a.Path[a.Index:], " "),
+					strings.Join(path[index:], " "),
 				),
 			)
 		}
 	} else {
-		logger.Error(errors.Errorf("Command '%s' is not defined", a.Path[a.Index]))
+		logger.Error(errors.Errorf("Command '%s' is not defined", path[index]))
 	}
 }
