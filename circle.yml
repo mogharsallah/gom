@@ -10,7 +10,7 @@ machine:
   services:
     - docker
 deployment:
- release:
+ master:
    branch: master
    commands:
    — go get github.com/mitchellh/gox
