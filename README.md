@@ -24,8 +24,8 @@ If you have [**_GO_**](https://golang.org) installed you just need  to type:
 ` $ go get github.com/medhoover/gom `
 ___
 
-For others, since this project is still in beta, you would have to do a manually install. Just download the the binary file from [release page](https://github.com/medhoover/gom/releases),  
- rename it, and place it one of your path folders.
+For others, since this project is still in beta, you would have to do a manual install. Just download the binary file from [release page](https://github.com/medhoover/gom/releases),  
+ rename it, and place it in one of your path folders.
 
 # Config file
 
