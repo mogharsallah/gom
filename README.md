@@ -29,9 +29,10 @@ For others, since this project is still in beta, you would have to do a manually
 
 # Config file
 
-By default the config file looks for `gom.yaml` in your current directory. But you can manually set the file location by '-f' flag:  ` $ gom -f=path/to/file command`
+By default, gom looks for `gom.yaml` file in your current directory. But you can manually set the file location by '-f' flag:
+` $ gom -f=path/to/file command`
 
-The config file follows must follow the YAML syntax, and contains the name and the commands properties:
+The config file follows the YAML syntax, and contains the name and the commands properties:
 ```yaml
 name: projectName
 commands:
