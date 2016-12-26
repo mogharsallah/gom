@@ -4,21 +4,21 @@
 
 # Introduction
 
-__gom__ is a Powerful commands manager that simplifies complex scripts execution by defining aliases and execution policies. gom reads your commands from the _YAML_ config file, and execute the passed command alias.
+__gom__ is a Powerful commands manager that simplifies complex scripts execution by defining aliases and execution policies. gom reads your commands from the _YAML_ [config file](#config-file), and execute the passed command alias.
 
 # Usage
 
 [![asciicast](https://asciinema.org/a/8j51ktbjrzox4augwuke0kmfs.png)](https://asciinema.org/a/8j51ktbjrzox4augwuke0kmfs)
 
 ### Create a config file
-Create a configuration file named `gom.yaml` and add your commands. More information in [config file]()
+Create a configuration file named `gom.yaml` and add your commands. More information in [config file](#config-file)
 
 ### Launch your commands!
 Just type :  ```$ gom [Path to Command...] command [Options]```
 
 For more details check the help manual : `$ gom -h`
 
-# install
+# Install
 
 If you have [**_GO_**](https://golang.org) installed you just need  to type:  
 ` $ go get github.com/medhoover/gom `
@@ -50,7 +50,7 @@ commands:
 - Add config file initialisation
 - Add shortcuts (maybe flags) for environment variables
 - Add support for parallel execution
-- Run multiple inline commands like `$ pwd && ls`
+- Support serial commands using '&& || ...'
 - Simplify installation
 
 # Questions and issues
