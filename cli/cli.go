@@ -36,12 +36,12 @@ func launche(path []string, index int, ci *config.ConfigInstance) {
 			logger.Error(
 				errors.Wrapf(
 					err,
-					"Invalid command '%s'",
+					"Command '%s' Failed",
 					strings.Join(path[index:], " "),
 				),
 			)
 		}
 	} else {
-		logger.Error(errors.Errorf("Command '%s' is not defined", path[index]))
+		logger.Error(errors.Errorf("Command '%s' Failed: Command is not defined", path[index]))
 	}
 }

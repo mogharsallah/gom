@@ -74,7 +74,7 @@ func (c *CommandType) Execute(path []string, index int) error {
 			if subCommand, exist := c.subCommands[path[index]]; exist {
 				return subCommand.Execute(path, index)
 			}
-			return fmt.Errorf("Command '%s' is not defined", path[index])
+			return fmt.Errorf("Command is not defined")
 		}
 		return fmt.Errorf("Please specify a sub-command")
 	}
