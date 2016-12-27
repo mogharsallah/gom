@@ -52,7 +52,7 @@ func (c *CommandType) Execute(path []string, index int) error {
 		for _, command := range c.commands {
 			// If user passes arguments to command, join it.
 			if len(path) > index+1 {
-				command = command + " " + strings.Join(path[index:], " ")
+				command = command + " " + strings.Join(path[index+1:], " ")
 			}
 			// Talk to system shell. Example (Unix): sh -c args
 			cmd := exec.Command(sysShell, sysCommandArg, command)
