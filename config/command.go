@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"reflect"
+	"runtime"
 	"strings"
 
 	"github.com/medhoover/gom/logger"
@@ -20,6 +21,19 @@ type Command interface {
 type CommandType struct {
 	commands    []string
 	subCommands map[string]*CommandType
+}
+
+// gom talks with the system shell to support POSIX scripting
+var (
+	sysShell      = "sh"
+	sysCommandArg = "-c"
+)
+
+func init() {
+	if runtime.GOOS == "windows" {
+		sysShell = "cmd"
+		sysCommandArg = "/c"
+	}
 }
 
 // // For proper display
@@ -38,16 +52,17 @@ func (c *CommandType) Execute(path []string, index int) error {
 	// Execute commands if they exist. No need to check for the subCommands map
 	if len(c.commands) > 0 {
 		for _, command := range c.commands {
-			args := strings.Split(command, " ")
-			args = append(args, path[index:]...)
-			cmd := exec.Command(args[0], args[1:]...)
+			// Build command arguments
+			args := command + " " + strings.Join(path[index:], " ")
+			// Talk to system shell. Example (Unix): sh -c args
+			cmd := exec.Command(sysShell, sysCommandArg, args)
 			cmd.Stdin = os.Stdout
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
+			logger.Command(args)
 			if err := cmd.Start(); err != nil {
 				return err
 			}
-			logger.Command(strings.Join(args, " "))
 			if err := cmd.Wait(); err != nil {
 				return err
 			}
