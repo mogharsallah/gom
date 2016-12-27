@@ -8,7 +8,7 @@ __gom__ is a Powerful commands manager that simplifies complex scripts execution
 
 # Usage
 
-[![asciicast](https://asciinema.org/a/8j51ktbjrzox4augwuke0kmfs.png)](https://asciinema.org/a/8j51ktbjrzox4augwuke0kmfs)
+![imgur](https://i.imgur.com/0Z65Xbq.gif)
 
 ### Create a config file
 Create a configuration file named `gom.yaml` and add your commands. More information in [config file](#config-file)
