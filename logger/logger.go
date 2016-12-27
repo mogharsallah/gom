@@ -4,7 +4,6 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
-	"os"
 
 	"github.com/fatih/color"
 )
@@ -28,15 +27,15 @@ func init() {
 		"TRACE: ",
 		log.Ldate|log.Lmicroseconds)
 
-	commandLogger = log.New(os.Stdout,
+	commandLogger = log.New(color.Output,
 		yellow("> "),
 		0)
 
-	infoLogger = log.New(os.Stdout,
+	infoLogger = log.New(color.Output,
 		cyan("INFO: "),
 		0)
 
-	errorLogger = log.New(os.Stderr,
+	errorLogger = log.New(color.Output,
 		red("ERROR: "),
 		0)
 }
