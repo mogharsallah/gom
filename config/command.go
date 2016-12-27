@@ -47,8 +47,6 @@ func init() {
 
 // Execute a command, it accepts a path slice and the related command index
 func (c *CommandType) Execute(path []string, index int) error {
-	// increment index to point to the current command in the path slice
-	index++
 	// Execute commands if they exist. No need to check for the subCommands map
 	if len(c.commands) > 0 {
 		for _, command := range c.commands {
@@ -68,6 +66,7 @@ func (c *CommandType) Execute(path []string, index int) error {
 			}
 		}
 	} else {
+		index++
 		// Before checking subCommands property, make sure it still has path left
 		if len(path) > index {
 			// Execute subCommand if found

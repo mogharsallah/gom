@@ -16,15 +16,14 @@ func New() {
 		logger.Info("Version 0.1.0\nPlease check https://github.com/medhoover/gom for new updates")
 		os.Exit(1)
 	}
-
 	// Show help if no arguments were entered
-	if ArgCount <= FlagCount {
+	if len(os.Args) < FlagCount+1 {
 		Usage()
 		os.Exit(1)
 	}
 
 	path := os.Args[FlagCount+1:]
-	index := FlagCount
+	index := 0
 	ci := config.New(FilePath)
 	launche(path, index, ci)
 }
