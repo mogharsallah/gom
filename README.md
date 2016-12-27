@@ -45,13 +45,15 @@ commands:
 
 ```
 
+A command must be in a form of a string value, which gets executed using its YAML path ($ gom greet evening)
+An array of strings is considered as a command list, which gets executed sequently ($ gom greet morning)
+
 # TODO
 
 - Add unit tests
 - Add config file initialisation
 - Add shortcuts (maybe flags) for environment variables
 - Add support for parallel execution
-- Support serial commands using '&& || ...'
 - Simplify installation
 
 # Questions and issues
