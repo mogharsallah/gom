@@ -51,7 +51,7 @@ func init() {
 			"\t                    Hallo!\n",
 			"\t                    Bonjour!\n",
 			"\t# Passe optional arguments\n",
-			"\t> gom names -f =>   File1 .. .\n\n",
+			"\t> gom list names -f =>   File1 .. .\n\n",
 			"-----------\n",
 			"Author:\tMohamed GHARSALLAH https://gharsallah.com\n",
 			"For more details check: https://github.com/medhoover/gom\n",
