@@ -50,14 +50,16 @@ func (c *CommandType) Execute(path []string, index int) error {
 	// Execute commands if they exist. No need to check for the subCommands map
 	if len(c.commands) > 0 {
 		for _, command := range c.commands {
-			// Build command arguments
-			args := command + " " + strings.Join(path[index:], " ")
+			// If user passes arguments to command, join it.
+			if len(path) > index+1 {
+				command = command + " " + strings.Join(path[index:], " ")
+			}
 			// Talk to system shell. Example (Unix): sh -c args
-			cmd := exec.Command(sysShell, sysCommandArg, args)
+			cmd := exec.Command(sysShell, sysCommandArg, command)
 			cmd.Stdin = os.Stdout
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
-			logger.Command(args)
+			logger.Command(command)
 			if err := cmd.Start(); err != nil {
 				return err
 			}
