@@ -2,45 +2,53 @@ package cli
 
 import (
 	"os"
-	"strings"
 
+	flags "github.com/jessevdk/go-flags"
 	"github.com/medhoover/gom/config"
 	"github.com/medhoover/gom/logger"
-	"github.com/pkg/errors"
 )
 
-func New() {
+const GomVersion = "0.2.0"
+const FilePath = "./gom.yaml"
 
-	// Show gom version if -v flag was present
-	if VersionFlag {
-		logger.Info("Version 0.1.0\nPlease check https://github.com/medhoover/gom for new updates")
-		os.Exit(1)
-	}
-	// Show help if no arguments were entered
-	if len(os.Args) < FlagCount+1 {
-		Usage()
-		os.Exit(1)
-	}
-
-	path := os.Args[FlagCount+1:]
-	index := 0
-	ci := config.New(FilePath)
-	launche(path, index, ci)
+var Options struct {
+	Version  func() `long:"version" description:"Show gom version"`
+	FilePath string `short:"f" long:"file" description:"Configuration file path" value-name:"FILE"`
+	Usage    string
 }
 
-func launche(path []string, index int, ci *config.ConfigInstance) {
+func New() {
+	// Set callback for --version flag
+	Options.Version = showVersion
+	// Define how usage section is shown inside help
+	Options.Usage = "[options] command [command_options...] "
+	// Set default FilePath. If user uses the file flag, the value will change
+	Options.FilePath = FilePath
 
-	if command, exist := ci.Commands[path[index]]; exist {
-		if err := command.Execute(path, index); err != nil {
-			logger.Error(
-				errors.Wrapf(
-					err,
-					"Command '%s' Failed",
-					strings.Join(path[index:], " "),
-				),
-			)
-		}
-	} else {
-		logger.Error(errors.Errorf("Command '%s' Failed: Command is not defined", path[index]))
+	// Create a flag parser
+	parser := flags.NewParser(&Options, flags.HelpFlag|flags.PassAfterNonOption|flags.PrintErrors)
+
+	// Parse flags and retrieve arguments
+	args, err := parser.Parse()
+	if err != nil {
+		os.Exit(0)
 	}
+
+	// Print help if no arguments were entered
+	if len(args) == 0 {
+		parser.WriteHelp(os.Stdout)
+		os.Exit(0)
+	}
+
+	// Create a new configuration instance from the file path
+	ci := config.New(Options.FilePath)
+
+	// Execute the passed command alias
+	ci.Execute(args)
+}
+
+// showVersion prints gom version, used when --version flag is issued
+func showVersion() {
+	logger.Info("Version " + GomVersion + "\nPlease check https://github.com/medhoover/gom for new updates")
+	os.Exit(0)
 }
