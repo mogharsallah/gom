@@ -14,7 +14,7 @@ __gom__ is a Powerful commands manager that simplifies complex scripts execution
 Create a configuration file named `gom.yaml` and add your commands. More information in [config file](#config-file)
 
 ### Launch your commands!
-Just type :  ```$ gom [Path to Command...] command [Options]```
+Just type :  ```$ gom [option] command [command_option...]```
 
 For more details check the help manual : `$ gom -h`
 
@@ -29,8 +29,9 @@ For others, since this project is still in beta, you would have to do a manual i
 
 # Config file
 
-By default, gom looks for `gom.yaml` file in your current directory. But you can manually set the file location by '-f' flag:
-` $ gom -f=path/to/file command`
+By default, gom looks for `gom.yaml` file in your current directory. But you can manually set the file location by (-f, --file) flags:
+
+`$ gom -f path/to/file.yaml ...`
 
 The config file follows the YAML syntax, and contains the name and the commands properties:
 ```yaml
@@ -45,8 +46,10 @@ commands:
 
 ```
 
-A command must be in a form of a string value, which gets executed using its YAML path ($ gom greet evening)
-An array of strings is considered as a command list, which gets executed sequently ($ gom greet morning)
+A command have a string value, which gets executed using its YAML path ($ gom greet evening).
+
+An array of strings is considered as a command list, which gets executed sequently ($ gom greet morning).
+
 
 # TODO
 
