@@ -20,7 +20,7 @@ type parser interface {
 
 // Defining the Configuration type
 type ConfigInstance struct {
-	Name     string                 `yaml:"name,omitempty" validate:"string,required"`
+	Name     string                 `yaml:"name,omitempty"`
 	Commands map[string]CommandType `yaml:"commands,flow,omitempty"`
 }
 
@@ -54,10 +54,6 @@ func (ci *ConfigInstance) parse(path string) (*ConfigInstance, error) {
 		return nil, errors.Wrap(err, "Invalid file structure")
 	}
 
-	// Validate the ConfigInstance structure
-	if valid, err := ci.Validate(); valid == false {
-		return nil, errors.Wrap(err, "Invalid file structure")
-	}
 	return ci, nil
 }
 
