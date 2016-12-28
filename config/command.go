@@ -13,8 +13,7 @@ import (
 
 type anyType interface{}
 
-type Command interface {
-	Execute([]string, int) error
+type builder interface {
 	populate(interface{}) (*Command, error)
 }
 
@@ -36,24 +35,13 @@ func init() {
 	}
 }
 
-// // For proper display
-// func (c CommandType) String() string {
-// 	if c.commands != nil {
-// 		return fmt.Sprintf("%v ", c.commands)
-// 	} else {
-// 		return fmt.Sprintf("%v ", c.subCommands)
-// 	}
-// }
-
 // Execute a command, it accepts a path slice and the related command index
-func (c *CommandType) Execute(path []string, index int) error {
+func (c *CommandType) Execute(args []string) error {
 	// Execute commands if they exist. No need to check for the subCommands map
 	if len(c.commands) > 0 {
 		for _, command := range c.commands {
 			// If user passes arguments to command, join it.
-			if len(path) > index+1 {
-				command = command + " " + strings.Join(path[index+1:], " ")
-			}
+			command = command + " " + strings.Join(args, " ")
 			// Talk to system shell. Example (Unix): sh -c args
 			cmd := exec.Command(sysShell, sysCommandArg, command)
 			cmd.Stdin = os.Stdout
@@ -68,14 +56,13 @@ func (c *CommandType) Execute(path []string, index int) error {
 			}
 		}
 	} else {
-		index++
-		// Before checking subCommands property, make sure it still has path left
-		if len(path) > index {
+		// Before checking subCommands property, make sure it still has args left
+		if len(args) > 0 {
 			// Execute subCommand if found
-			if subCommand, exist := c.subCommands[path[index]]; exist {
-				return subCommand.Execute(path, index)
+			if subCommand, exist := c.subCommands[args[0]]; exist {
+				return subCommand.Execute(args[1:])
 			}
-			return fmt.Errorf("Command is not defined")
+			return fmt.Errorf(("Command '%s' is not defined"), args[0])
 		}
 		return fmt.Errorf("Please specify a sub-command")
 	}

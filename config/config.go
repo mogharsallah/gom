@@ -3,11 +3,20 @@ package config
 import (
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 
 	"github.com/medhoover/gom/logger"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 )
+
+type Command interface {
+	Execute()
+}
+
+type parser interface {
+	parse(path string) (*ConfigInstance, error)
+}
 
 // Defining the Configuration type
 type ConfigInstance struct {
@@ -15,12 +24,19 @@ type ConfigInstance struct {
 	Commands map[string]CommandType `yaml:"commands,flow,omitempty"`
 }
 
-type parser interface {
-	new(path string) (*ConfigInstance, error)
+// Export a configuration instance
+func New(path string) *ConfigInstance {
+	// create a new configuration instance
+	var ci *ConfigInstance
+	ci, err := ci.parse(path)
+	if err != nil {
+		logger.Error(err)
+	}
+	return ci
 }
 
 // Read, parse and validate the config file
-func (ci *ConfigInstance) new(path string) (*ConfigInstance, error) {
+func (ci *ConfigInstance) parse(path string) (*ConfigInstance, error) {
 
 	// Read config file
 	data, err := ioutil.ReadFile(path)
@@ -45,13 +61,20 @@ func (ci *ConfigInstance) new(path string) (*ConfigInstance, error) {
 	return ci, nil
 }
 
-// Export a configuration instance
-func New(path string) *ConfigInstance {
-	// create a new configuration instance
-	var ci *ConfigInstance
-	ci, err := ci.new(path)
-	if err != nil {
-		logger.Error(err)
+// Execute a command by the name as passed in arguments
+func (ci *ConfigInstance) Execute(args []string) {
+
+	if command, exist := ci.Commands[args[0]]; exist {
+		if err := command.Execute(args[1:]); err != nil {
+			logger.Error(
+				errors.Wrapf(
+					err,
+					"Command '%s' Failed",
+					strings.Join(args, " "),
+				),
+			)
+		}
+	} else {
+		logger.Error(errors.Errorf("Command '%s' Failed: Command is not defined", args[0]))
 	}
-	return ci
 }
