@@ -9,7 +9,7 @@ import (
 )
 
 const GomVersion = "0.2.0"
-const FilePath = "./gom.yaml"
+const FilePath = "gom.yaml"
 
 var Options struct {
 	Version  func() `long:"version" description:"Show gom version"`
