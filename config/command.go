@@ -11,15 +11,13 @@ import (
 	"github.com/medhoover/gom/logger"
 )
 
-type anyType interface{}
-
 type builder interface {
 	populate(interface{}) (*Command, error)
 }
 
-type CommandType struct {
+type Command struct {
 	commands    []string
-	subCommands map[string]*CommandType
+	subCommands map[string]*Command
 }
 
 // gom talks with the system shell to support POSIX scripting
@@ -36,7 +34,7 @@ func init() {
 }
 
 // Execute a command, it accepts a path slice and the related command index
-func (c *CommandType) Execute(args []string) error {
+func (c *Command) Execute(args []string) error {
 	// Execute commands if they exist. No need to check for the subCommands map
 	if len(c.commands) > 0 {
 		for _, command := range c.commands {
@@ -69,9 +67,9 @@ func (c *CommandType) Execute(args []string) error {
 	return nil
 }
 
-// Custom Unmarshal method for CommandType
+// Custom Unmarshal method for Command
 // Populate the type structure based on the "commands" property from the YAML file
-func (c *CommandType) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (c *Command) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var m anyType
 	err := unmarshal(&m)
 	if err != nil {
@@ -81,7 +79,7 @@ func (c *CommandType) UnmarshalYAML(unmarshal func(interface{}) error) error {
 }
 
 // Recursive method to populate a Command value
-func (c *CommandType) populate(v interface{}) error {
+func (c *Command) populate(v interface{}) error {
 	// Populate command struct based on the value type
 	switch reflect.TypeOf(v).Kind() {
 	// Append the string to the commands property
@@ -101,12 +99,12 @@ func (c *CommandType) populate(v interface{}) error {
 		}
 	case reflect.Map:
 		m := reflect.ValueOf(v).Interface().(map[interface{}]interface{})
-		c.subCommands = make(map[string]*CommandType)
+		c.subCommands = make(map[string]*Command)
 		for key, value := range m {
 			if value == nil {
 				return fmt.Errorf("\nCommand '%s' cannot be empty", key)
 			}
-			c.subCommands[key.(string)] = &CommandType{}
+			c.subCommands[key.(string)] = &Command{}
 			if err := c.subCommands[key.(string)].populate(value); err != nil {
 				return err
 			}
