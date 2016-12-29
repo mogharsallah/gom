@@ -1,6 +1,19 @@
 name: gom
 commands:
+# To execute a command, use its path name
+# Example: $ gom install
   install:
     - go fmt github.com/medhoover/gom
     - go install github.com/medhoover/gom
-  run: go run gom.go
+  greet:
+    morning: echo $GREET_M $USER !
+    evening: echo $GREET_E $USER !
+# Use -e flag to set an environment
+# Example: $ gom -e fr greet morning
+env:
+  fr:
+    GREET_M: Bonjour
+    GREET_E: Bonne nuit
+  en:
+    GREET_M: Good morning
+    GREET_E: Good Evening
