@@ -8,7 +8,7 @@ __gom__ is a Powerful commands manager that simplifies complex scripts execution
 
 # Usage
 
-![imgur](https://i.imgur.com/0Z65Xbq.gif)
+[![asciicast](https://asciinema.org/a/1ulj96gi7v6lyk2tqt2mn9oj3.png)](https://asciinema.org/a/1ulj96gi7v6lyk2tqt2mn9oj3)
 
 ### Create a config file
 Create a configuration file named `gom.yaml` and add your commands. More information in [config file](#config-file)
@@ -35,27 +35,39 @@ By default, gom looks for `gom.yaml` file in your current directory. But you can
 
 The config file follows the YAML syntax, and contains the name and the commands properties:
 ```yaml
-name: projectName
+name: gom
 commands:
+# To execute a command, use its path name
+# Example: $ gom install
+  install:
+    - go fmt github.com/medhoover/gom
+    - go install github.com/medhoover/gom
   greet:
-    morning:
-      - echo Bonjour!
-      - echo Guten tag!
-      - echo Good morning!
-    evening: echo Good evening!
+    morning: echo $GREET_M $USER !
+    evening: echo $GREET_E $USER !
+# Use -e flag to set an environment
+# Example: $ gom -e fr greet morning
+env:
+  fr:
+    GREET_M: Bonjour
+    GREET_E: Bonne nuit
+  en:
+    GREET_M: Good morning
+    GREET_E: Good Evening
 
 ```
 
-A command have a string value, which gets executed using its YAML path ($ gom greet evening).
+A command have a string value, which gets executed using its YAML path: `$ gom greet evening`
 
-An array of strings is considered as a command list, which gets executed sequently ($ gom greet morning).
+An array of strings is considered as a command list, which gets executed sequently: `$ gom install`
+
+Define environment variables within the 'env' property. Set the defined variables using the (-e , --environment) flags: `$ gom -e en greet morning`
 
 
 # TODO
 
 - Add unit tests
 - Add config file initialisation
-- Add shortcuts (maybe flags) for environment variables
 - Add support for parallel execution
 - Simplify installation
 

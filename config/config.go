@@ -10,8 +10,14 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type Command interface {
-	Execute()
+type anyType interface{}
+
+type launcher interface {
+	Execute(args []string)
+}
+
+type EnvSetter interface {
+	Set()
 }
 
 type parser interface {
@@ -20,8 +26,9 @@ type parser interface {
 
 // Defining the Configuration type
 type ConfigInstance struct {
-	Name     string                 `yaml:"name,omitempty"`
-	Commands map[string]CommandType `yaml:"commands,flow,omitempty"`
+	Name         string                 `yaml:"name,omitempty"`
+	Commands     map[string]Command     `yaml:"commands,flow,omitempty"`
+	Environments map[string]Environment `yaml:"env,flow,omitempty"`
 }
 
 // Export a configuration instance
@@ -51,7 +58,7 @@ func (ci *ConfigInstance) parse(path string) (*ConfigInstance, error) {
 	// Parse the file to the ConfigInstance value
 	err = yaml.Unmarshal([]byte(data), &ci)
 	if err != nil {
-		return nil, errors.Wrap(err, "Invalid file structure")
+		return nil, errors.Wrap(err, "File structure")
 	}
 
 	return ci, nil
@@ -72,5 +79,23 @@ func (ci *ConfigInstance) Execute(args []string) {
 		}
 	} else {
 		logger.Error(errors.Errorf("Command '%s' Failed: Command is not defined", args[0]))
+	}
+}
+
+// Set an environment by the name
+func (ci *ConfigInstance) Set(name string) {
+
+	if env, exist := ci.Environments[name]; exist {
+		if err := env.Set(); err != nil {
+			logger.Error(
+				errors.Wrapf(
+					err,
+					"Environment '%s' Failed",
+					name,
+				),
+			)
+		}
+	} else {
+		logger.Error(errors.Errorf("Environment '%s' Failed: Environment not defined", name))
 	}
 }

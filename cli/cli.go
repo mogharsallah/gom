@@ -13,20 +13,23 @@ const FilePath = "gom.yaml"
 
 var Options struct {
 	Version  func() `long:"version" description:"Show gom version"`
-	FilePath string `short:"f" long:"file" description:"Configuration file path" value-name:"FILE"`
+	FilePath string `short:"f" long:"file" description:"Configuration file path" value-name:"path/to/file"`
+	Env      string `short:"e" long:"environment" description:"Set environment variables from 'env' property" value-name:"Env"`
 	Usage    string
 }
 
 func New() {
 	// Set callback for --version flag
 	Options.Version = showVersion
-	// Define how usage section is shown inside help
-	Options.Usage = "[options] command [command_options...] "
+
 	// Set default FilePath. If user uses the file flag, the value will change
 	Options.FilePath = FilePath
 
 	// Create a flag parser
 	parser := flags.NewParser(&Options, flags.HelpFlag|flags.PassAfterNonOption|flags.PrintErrors)
+
+	// Define how usage section is shown inside help
+	parser.Usage = "[options] command [command_options...] "
 
 	// Parse flags and retrieve arguments
 	args, err := parser.Parse()
@@ -34,14 +37,19 @@ func New() {
 		os.Exit(0)
 	}
 
-	// Print help if no arguments were entered
+	// Create a new configuration instance from the file path
+	ci := config.New(Options.FilePath)
+
+	// Use the given environment
+	if Options.Env != "" {
+		ci.Set(Options.Env)
+	}
+
+	// Exit if no arguments were entered
 	if len(args) == 0 {
 		parser.WriteHelp(os.Stdout)
 		os.Exit(0)
 	}
-
-	// Create a new configuration instance from the file path
-	ci := config.New(Options.FilePath)
 
 	// Execute the passed command alias
 	ci.Execute(args)
