@@ -12,12 +12,12 @@ import (
 )
 
 type builder interface {
-	populate(interface{}) (*Command, error)
+	populate(interface{}) (*command, error)
 }
 
-type Command struct {
-	commands    []string
-	subCommands map[string]*Command
+type command struct {
+	lines       []string
+	subCommands map[string]*command
 }
 
 // gom talks with the system shell to support POSIX scripting
@@ -34,10 +34,10 @@ func init() {
 }
 
 // Execute a command, it accepts a path slice and the related command index
-func (c *Command) Execute(args []string) error {
+func (c *command) Execute(args []string) error {
 	// Execute commands if they exist. No need to check for the subCommands map
-	if len(c.commands) > 0 {
-		for _, command := range c.commands {
+	if len(c.lines) > 0 {
+		for _, command := range c.lines {
 			// If user passes arguments to command, join it.
 			command = command + " " + strings.Join(args, " ")
 			// Talk to system shell. Example (Unix): sh -c args
@@ -67,9 +67,9 @@ func (c *Command) Execute(args []string) error {
 	return nil
 }
 
-// Custom Unmarshal method for Command
+// UnmarshalYAML custom Unmarshal method for Command
 // Populate the type structure based on the "commands" property from the YAML file
-func (c *Command) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (c *command) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var m anyType
 	err := unmarshal(&m)
 	if err != nil {
@@ -79,32 +79,32 @@ func (c *Command) UnmarshalYAML(unmarshal func(interface{}) error) error {
 }
 
 // Recursive method to populate a Command value
-func (c *Command) populate(v interface{}) error {
+func (c *command) populate(v interface{}) error {
 	// Populate command struct based on the value type
 	switch reflect.TypeOf(v).Kind() {
 	// Append the string to the commands property
 	case reflect.String:
-		c.commands = []string{reflect.ValueOf(v).Interface().(string)}
+		c.lines = []string{reflect.ValueOf(v).Interface().(string)}
 	case reflect.Slice:
 		// Extract commands (string typed) and append it to commands property
 		slice := reflect.ValueOf(v)
-		c.commands = make([]string, slice.Len())
+		c.lines = make([]string, slice.Len())
 		for i := 0; i < slice.Len(); i++ {
 			str, ok := slice.Index(i).Interface().(string)
 			if !ok {
 				return fmt.Errorf("\nInvalid command %v. Arrays should contain only string elements",
 					slice.Index(i))
 			}
-			c.commands[i] = str
+			c.lines[i] = str
 		}
 	case reflect.Map:
 		m := reflect.ValueOf(v).Interface().(map[interface{}]interface{})
-		c.subCommands = make(map[string]*Command)
+		c.subCommands = make(map[string]*command)
 		for key, value := range m {
 			if value == nil {
 				return fmt.Errorf("\nCommand '%s' cannot be empty", key)
 			}
-			c.subCommands[key.(string)] = &Command{}
+			c.subCommands[key.(string)] = &command{}
 			if err := c.subCommands[key.(string)].populate(value); err != nil {
 				return err
 			}

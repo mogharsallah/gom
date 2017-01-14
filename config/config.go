@@ -1,3 +1,7 @@
+/*
+config package
+Define Configuration structure and related handlers
+*/
 package config
 
 import (
@@ -16,7 +20,7 @@ type launcher interface {
 	Execute(args []string)
 }
 
-type EnvSetter interface {
+type envSetter interface {
 	Set()
 }
 
@@ -27,11 +31,11 @@ type parser interface {
 // Defining the Configuration type
 type ConfigInstance struct {
 	Name         string                 `yaml:"name,omitempty"`
-	Commands     map[string]Command     `yaml:"commands,flow,omitempty"`
-	Environments map[string]Environment `yaml:"env,flow,omitempty"`
+	Commands     map[string]command     `yaml:"commands,flow,omitempty"`
+	Environments map[string]environment `yaml:"env,flow,omitempty"`
 }
 
-// Export a configuration instance
+// New exports a configuration instance
 func New(path string) *ConfigInstance {
 	// create a new configuration instance
 	var ci *ConfigInstance

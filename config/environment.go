@@ -7,14 +7,14 @@ import (
 	"github.com/pkg/errors"
 )
 
-type Environment struct {
+type environment struct {
 	variables map[string]string
 }
 
 var invalidEnvError = errors.New("\nEnvironment definition should have the following syntax:\nenv:\n  envName:\n    valName: value (string)\n    ...")
 
 // Set the variables of the map receiver as environment variables
-func (env *Environment) Set() error {
+func (env *environment) Set() error {
 	for key, value := range env.variables {
 		if err := os.Setenv(key, value); err != nil {
 			return err
@@ -23,8 +23,8 @@ func (env *Environment) Set() error {
 	return nil
 }
 
-// Custom Unmarshal method for Environment
-func (env *Environment) UnmarshalYAML(unmarshal func(interface{}) error) error {
+// UnmarshalYAML a custom Unmarshal method for environment
+func (env *environment) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	// Prepare a variable to cast any type
 	var e anyType
 

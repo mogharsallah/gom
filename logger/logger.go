@@ -1,3 +1,7 @@
+/*
+logger package
+Define logging methods
+*/
 package logger
 
 import (
@@ -40,27 +44,27 @@ func init() {
 		0)
 }
 
-// Log commands
+// Command log executed commands
 func Command(message string) {
 	commandLogger.Printf("%s\n", yellow(message))
 }
 
-// Log important information
+// Info iog important information
 func Info(message string) {
 	infoLogger.Printf("%s\n", message)
 }
 
-// Log error information and exit
+// Error log error information and exit
 func Error(err error) {
 	errorLogger.Fatalf("%s\n", err)
 }
 
-// Log anything to trace
+// Trace log anything to trace
 func Trace(message interface{}) {
 	traceLogger.Printf("%+v\n", message)
 }
 
-// Change Trace ouput writer, default is ioutil.Discard.
+// SetTraceOutput change Trace output writer, default is ioutil.Discard.
 func SetTraceOutput(w io.Writer) {
 	traceLogger.SetOutput(w)
 }
