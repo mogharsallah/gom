@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/medhoover/gom.svg?style=svg&circle-token=45019dc7f97b86994b79a44e66305018efd9a22f)](https://circleci.com/gh/medhoover/gom) **_Beta_**
+[![CircleCI](https://circleci.com/gh/medhoover/gom.svg?style=svg&circle-token=45019dc7f97b86994b79a44e66305018efd9a22f)](https://circleci.com/gh/medhoover/gom) [![Go Report Card](https://goreportcard.com/badge/github.com/medhoover/gom)](https://goreportcard.com/report/github.com/medhoover/gom) **_Beta_**
 
 **Got a question? / Want to collaborate?** Feel free to open an [issue](https://github.com/medhoover/gom/issues) or reach me at <gmedhoover@gmail.com>
 
